@@ -10,11 +10,10 @@ import {goBack} from '../../../../utility/commonFunction';
 import {KEY_LOCATIONS} from '../../../../utility/constants';
 import {retrieveItem, storeItem} from '../../../../utility/customAsyncStorage';
 import AppContainer from '../../../common/container/AppContainer';
+import flashMessage from '../../../common/FlashAlert';
 import SearchBar from '../../../common/search/searchbar';
 import RegularText from '../../../common/text/RegularText';
-import EmptyList from '../../../modules/EmptyList';
 import SearchList from '../../../modules/SearchList';
-import flashMessage from '../../../common/FlashAlert';
 
 const AddLocation = () => {
   const [location, setLocation] = useState('');
@@ -58,16 +57,15 @@ const AddLocation = () => {
     const previousLocations: Record<string, number>[] =
       (await retrieveItem(KEY_LOCATIONS)) || [];
 
-    // Check if this location already exists
     const isDuplicate = previousLocations.some(
       location => location.lat === payload.lat && location.lon === payload.lon,
     );
     if (isDuplicate) {
       return onPressCancel();
     }
-    // Add first location or new unique location
+
     const updatedLocations = [...previousLocations, payload];
-    // Store updated locations in AsyncStorage
+
     await storeItem(KEY_LOCATIONS, updatedLocations);
 
     setSuggestions([]);

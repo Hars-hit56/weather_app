@@ -14,4 +14,5 @@ export const Images = {
   IMG_RAIN: require('../assets/images/rain.png'),
   IMG_DRIZZLE: require('../assets/images/drizzle.png'),
   IMG_CLEAR: require('../assets/images/clear.png'),
+  IMG_NO_INTERNET: require('../assets/images/noInternetImage.png'),
 };

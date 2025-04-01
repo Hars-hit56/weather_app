@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import {API_KEY, BASE_URL} from '../../../../apies/apiTypes';
+import {boxShadowTwo} from '../../../../styles/Mixins';
 import {spacing} from '../../../../styles/spacing';
 import colors from '../../../../utility/colors';
 import {
@@ -18,17 +19,17 @@ import {
 import {
   COMMON_ERROR_MESSAGE,
   KEY_LOCATIONS,
+  KEY_LOCATIONS_PERMISSION_ASK,
   SCREEN_ADD_LOCATION,
   SCREEN_LOCATION_WEATHER_DETAIL,
 } from '../../../../utility/constants';
 import {retrieveItem, storeItem} from '../../../../utility/customAsyncStorage';
 import {ACTION_TYPE} from '../../../../utility/types/generalType';
 import AppContainer from '../../../common/container/AppContainer';
+import flashMessage from '../../../common/FlashAlert';
 import Header from '../../../common/header/Header';
 import SearchBar from '../../../common/search/searchbar';
 import LocationWeatherList from '../../../modules/LocationWeatherList';
-import {boxShadowTwo} from '../../../../styles/Mixins';
-import flashMessage from '../../../common/FlashAlert';
 
 const Home = () => {
   const [location, setLocation] = useState('');
@@ -47,19 +48,25 @@ const Home = () => {
     reqLocationPermission();
   }, []);
 
+  // Geo Location Permission
   const reqLocationPermission = async () => {
-    let granted = await requestLocationPermission();
-    if (PermissionsAndroid.RESULTS.GRANTED === granted) {
-      getGeoLocation(loc => storeUserLocation(loc));
+    const alreadyAsked = await retrieveItem(KEY_LOCATIONS_PERMISSION_ASK);
+
+    if (!alreadyAsked) {
+      let granted = await requestLocationPermission();
+      if (PermissionsAndroid.RESULTS.GRANTED === granted) {
+        getGeoLocation(loc => storeUserLocation(loc));
+        await storeItem(KEY_LOCATIONS_PERMISSION_ASK, 'true');
+      }
     }
   };
 
+  // Fetching data from api
   const fetchAsyncLocation = async () => {
     setIsLoading(true);
     const previousLocations: Record<string, number>[] = await retrieveItem(
       KEY_LOCATIONS,
     );
-
     if (!previousLocations || previousLocations.length === 0) {
       return setIsLoading(false);
     }
@@ -104,6 +111,7 @@ const Home = () => {
     navigate(SCREEN_ADD_LOCATION);
   };
 
+  //Navigating to detail Page and delete functionality
   const onPressLocationWeatherCard = async (
     location: Record<string, any>,
     type?: ACTION_TYPE,
@@ -116,15 +124,12 @@ const Home = () => {
           item?.lat !== location?.coord?.lat &&
           item?.lon !== location?.coord?.lon,
       );
-
       const filteredLocationWeatherRes = locationWeatherRes.filter(
         item =>
           item?.coord?.lat !== location?.coord?.lat &&
           item?.coord?.lon !== location?.coord?.lon,
       );
-
       setLocationWeatherRes(filteredLocationWeatherRes);
-
       if (updatedData.length !== previousLocations.length) {
         await storeItem(KEY_LOCATIONS, updatedData);
       }
@@ -132,6 +137,10 @@ const Home = () => {
       navigate(SCREEN_LOCATION_WEATHER_DETAIL, {location: location});
     }
   };
+  //refetch data
+  function onReferesh() {
+    fetchAsyncLocation();
+  }
   return (
     <AppContainer
       backgroundColor={colors.APP_BACKGROUND}
@@ -153,6 +162,7 @@ const Home = () => {
           <LocationWeatherList
             locations={locationWeatherRes}
             onPressLocationWeatherCard={onPressLocationWeatherCard}
+            onReferesh={onReferesh}
           />
         </View>
       )}

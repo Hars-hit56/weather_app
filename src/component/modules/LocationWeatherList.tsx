@@ -15,15 +15,19 @@ type LocationWeatherListProps = {
     location: Record<string, any>,
     type?: ACTION_TYPE,
   ) => void;
+  onReferesh: () => void;
 };
 
 const LocationWeatherList = ({
   locations,
   onPressLocationWeatherCard,
+  onReferesh,
 }: LocationWeatherListProps) => {
   return (
     <View>
       <SwipeListView
+        onRefresh={() => onReferesh()}
+        refreshing={false}
         data={locations || []}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => (

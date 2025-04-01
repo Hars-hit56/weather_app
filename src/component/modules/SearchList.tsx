@@ -1,8 +1,8 @@
-import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
-import RegularText from '../common/text/RegularText';
+import {FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {spacing} from '../../styles/spacing';
 import {FONT_FAMILY, FONT_SIZE} from '../../styles/typography';
 import colors from '../../utility/colors';
+import RegularText from '../common/text/RegularText';
 
 type SearchListProps = {
   suggestions: Record<string, any>[];
