@@ -1,0 +1,17 @@
+export const Images = {
+  IMG_ARROW_FORWARD: require('../assets/images/arrow_forward.png'),
+  IMG_ARROW: require('../assets/images/arrow.png'),
+  IMG_SEARCH: require('../assets/images/search.png'),
+  IMG_ADD_ICON: require('../assets/images/add_icon.png'),
+  IMG_DELETE: require('../assets/images/delete.png'),
+  IMG_HUMIDITY_METER: require('../assets/images/humidity_meter.png'),
+  IMG_PRESSURE_METER: require('../assets/images/pressure_meter.png'),
+  IMG_SPEED_METER: require('../assets/images/speed_meter.png'),
+  IMG_SUNSET: require('../assets/images/sunset.png'),
+  IMG_THUNDERSTROM: require('../assets/images/thunderstorm.png'),
+  IMG_ATMOSPHERE: require('../assets/images/atmosphere.png'),
+  IMG_SNOW: require('../assets/images/snow.png'),
+  IMG_RAIN: require('../assets/images/rain.png'),
+  IMG_DRIZZLE: require('../assets/images/drizzle.png'),
+  IMG_CLEAR: require('../assets/images/clear.png'),
+};
