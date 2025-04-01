@@ -37,7 +37,7 @@ const EmptyList = ({
 const styles = StyleSheet.create({
   mainContainer: {
     alignItems: 'center',
-    paddingVertical: APP_PADDING_HORIZONTAL * 2,
+    marginVertical: APP_PADDING_HORIZONTAL * 2,
     backgroundColor: colors.APP_BACKGROUND,
     paddingHorizontal: APP_PADDING_HORIZONTAL * 2,
   },

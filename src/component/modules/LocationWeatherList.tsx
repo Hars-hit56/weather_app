@@ -8,6 +8,8 @@ import {ACTION_TYPE} from '../../utility/types/generalType';
 import Image from '../common/Image';
 import LocationWeatherCard from '../row/locationWeatherCard';
 import EmptyList from './EmptyList';
+import RegularText from '../common/text/RegularText';
+import {FONT_FAMILY} from '../../styles/typography';
 
 type LocationWeatherListProps = {
   locations: Record<string, any>[];
@@ -15,47 +17,99 @@ type LocationWeatherListProps = {
     location: Record<string, any>,
     type?: ACTION_TYPE,
   ) => void;
-  onReferesh: () => void;
+  currentLocation: Record<string, number>;
 };
 
 const LocationWeatherList = ({
   locations,
   onPressLocationWeatherCard,
-  onReferesh,
+
+  currentLocation,
 }: LocationWeatherListProps) => {
+  const currentLoc = locations.find(
+    item =>
+      currentLocation &&
+      item.coord.lat === currentLocation.lat &&
+      item.coord.lon === currentLocation.lon,
+  );
+
+  const addedLocations = locations.filter(
+    item =>
+      !(
+        currentLocation &&
+        item.coord.lat === currentLocation.lat &&
+        item.coord.lon === currentLocation.lon
+      ),
+  );
+
   return (
     <View>
-      <SwipeListView
-        onRefresh={() => onReferesh()}
-        refreshing={false}
-        data={locations || []}
-        showsVerticalScrollIndicator={false}
-        renderItem={({item, index}) => (
-          <LocationWeatherCard
-            key={
-              'LocationWeatherCard' + item.coord.lon + item.coord.lat + index
-            }
-            location={item}
-            index={index}
-            onPressLocationWeatherCard={onPressLocationWeatherCard}
-          />
-        )}
-        stopLeftSwipe={1}
-        keyExtractor={(item, index) =>
-          String(item.coord.lon + item.coord.lat + index)
-        }
-        ListEmptyComponent={<EmptyList msg="No location added yet" />}
-        swipeToOpenPercent={20}
-        renderHiddenItem={({item, index}) => (
-          <RenderDeleteBtn
-            key={'RenderDeleteBtn' + index}
-            index={index}
-            item={item}
-            onPressLocationWeatherCard={onPressLocationWeatherCard}
-          />
-        )}
-        rightOpenValue={-spacing.WIDTH_64}
-      />
+      {currentLoc || addedLocations.length !== 0 ? (
+        <>
+          {currentLoc && (
+            <View style={styles.container}>
+              <RegularText style={styles.secontionTitle}>
+                Current Location
+              </RegularText>
+              <LocationWeatherCard
+                key={'currentLocation'}
+                location={currentLoc}
+                index={0}
+                onPressLocationWeatherCard={onPressLocationWeatherCard}
+              />
+            </View>
+          )}
+          {addedLocations.length !== 0 && (
+            <>
+              <RegularText
+                style={[
+                  styles.secontionTitle,
+                  {
+                    marginTop: currentLoc
+                      ? spacing.MARGIN_6
+                      : spacing.MARGIN_20,
+                  },
+                ]}>
+                Added Locations
+              </RegularText>
+              <SwipeListView
+                data={addedLocations}
+                showsVerticalScrollIndicator={false}
+                renderItem={({item, index}) => (
+                  <LocationWeatherCard
+                    key={
+                      'LocationWeatherCard' +
+                      item.coord.lon +
+                      item.coord.lat +
+                      index
+                    }
+                    location={item}
+                    index={index}
+                    onPressLocationWeatherCard={onPressLocationWeatherCard}
+                  />
+                )}
+                stopLeftSwipe={1}
+                keyExtractor={(item, index) =>
+                  String(item.coord.lon + item.coord.lat + index)
+                }
+                ListEmptyComponent={<EmptyList msg="No location added yet" />}
+                swipeToOpenPercent={20}
+                renderHiddenItem={({item, index}) => (
+                  <RenderDeleteBtn
+                    key={'RenderDeleteBtn' + index}
+                    index={index}
+                    item={item}
+                    onPressLocationWeatherCard={onPressLocationWeatherCard}
+                  />
+                )}
+                rightOpenValue={-spacing.WIDTH_64}
+              />
+            </>
+          )}
+        </>
+      ) : (
+        <EmptyList msg="No location added yet" />
+      )}
     </View>
   );
 };
@@ -89,6 +143,13 @@ const RenderDeleteBtn = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: spacing.MARGIN_20,
+  },
+  secontionTitle: {
+    paddingHorizontal: APP_PADDING_HORIZONTAL,
+    fontFamily: FONT_FAMILY.PRIMARY_SEMI_BOLD,
+  },
   hiddenItemContainer: {
     flex: 1,
     ...commonStyle.flexDirectionRow,

@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     paddingHorizontal: APP_PADDING_HORIZONTAL,
     backgroundColor: colors.WHITE,
-    paddingBottom: spacing.MARGIN_16,
+    paddingBottom: spacing.PADDING_16,
     ...commonStyle.flexDirectionRow,
     gap: spacing.MARGIN_16,
   },

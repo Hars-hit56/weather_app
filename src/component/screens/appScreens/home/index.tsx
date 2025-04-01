@@ -4,6 +4,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   PermissionsAndroid,
+  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -30,9 +31,11 @@ import flashMessage from '../../../common/FlashAlert';
 import Header from '../../../common/header/Header';
 import SearchBar from '../../../common/search/searchbar';
 import LocationWeatherList from '../../../modules/LocationWeatherList';
+import {APP_PADDING_HORIZONTAL} from '../../../../styles/globalStyles';
+import VirtualizedView from '../../../common/View/VirtualizedView';
 
 const Home = () => {
-  const [location, setLocation] = useState('');
+  const [geolocation, setGeoLocation] = useState<Record<string, number>>({});
   const [locationWeatherRes, setLocationWeatherRes] = useState<
     Record<string, any>[]
   >([]);
@@ -50,14 +53,10 @@ const Home = () => {
 
   // Geo Location Permission
   const reqLocationPermission = async () => {
-    const alreadyAsked = await retrieveItem(KEY_LOCATIONS_PERMISSION_ASK);
-
-    if (!alreadyAsked) {
-      let granted = await requestLocationPermission();
-      if (PermissionsAndroid.RESULTS.GRANTED === granted) {
-        getGeoLocation(loc => storeUserLocation(loc));
-        await storeItem(KEY_LOCATIONS_PERMISSION_ASK, 'true');
-      }
+    let granted = await requestLocationPermission();
+    if (PermissionsAndroid.RESULTS.GRANTED === granted) {
+      getGeoLocation(loc => storeUserLocation(loc));
+      await storeItem(KEY_LOCATIONS_PERMISSION_ASK, 'true');
     }
   };
 
@@ -93,6 +92,7 @@ const Home = () => {
   };
 
   const storeUserLocation = async (location: Record<string, number>) => {
+    setGeoLocation(location);
     const previousLocations: Record<string, number>[] =
       (await retrieveItem(KEY_LOCATIONS)) || [];
 
@@ -148,9 +148,9 @@ const Home = () => {
       <View style={styles.headerContainer}>
         <Header title="Weather App" hideBack />
         <SearchBar
-          onChangeText={setLocation}
+          onChangeText={() => {}}
           placeHolder="Enter Location"
-          value={location}
+          value={''}
           onPressSerchInput={onPressSearchInput}
           editable={false}
         />
@@ -158,13 +158,16 @@ const Home = () => {
       {isLoading ? (
         <ActivityIndicator style={{marginTop: spacing.MARGIN_20}} />
       ) : (
-        <View style={{flex: 1}}>
+        <VirtualizedView
+          style={{flex: 1}}
+          onRefresh={() => onReferesh()}
+          refreshing={false}>
           <LocationWeatherList
             locations={locationWeatherRes}
             onPressLocationWeatherCard={onPressLocationWeatherCard}
-            onReferesh={onReferesh}
+            currentLocation={geolocation}
           />
-        </View>
+        </VirtualizedView>
       )}
     </AppContainer>
   );
@@ -172,6 +175,7 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
+    backgroundColor: colors.WHITE,
     ...boxShadowTwo(),
   },
   addIcon: {

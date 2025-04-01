@@ -29,7 +29,7 @@ const LocationWeatherCard = ({
       activeOpacity={1}
       style={[
         styles.mainContainer,
-        index === 0 && {marginTop: spacing.MARGIN_20},
+        index === 0 && {marginTop: spacing.MARGIN_10},
         {backgroundColor: getWeatherColor(location?.weather[0]?.main)},
       ]}
       onPress={() => onPressLocationWeatherCard(location)}>
@@ -56,7 +56,7 @@ const LocationWeatherCard = ({
 
 const styles = StyleSheet.create({
   mainContainer: {
-    marginBottom: spacing.MARGIN_16,
+    marginBottom: spacing.MARGIN_14,
     padding: spacing.PADDING_16,
     borderRadius: spacing.RADIUS_10,
     marginHorizontal: APP_PADDING_HORIZONTAL,
