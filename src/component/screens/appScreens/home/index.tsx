@@ -4,7 +4,6 @@ import {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   PermissionsAndroid,
-  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -30,9 +29,8 @@ import AppContainer from '../../../common/container/AppContainer';
 import flashMessage from '../../../common/FlashAlert';
 import Header from '../../../common/header/Header';
 import SearchBar from '../../../common/search/searchbar';
-import LocationWeatherList from '../../../modules/LocationWeatherList';
-import {APP_PADDING_HORIZONTAL} from '../../../../styles/globalStyles';
 import VirtualizedView from '../../../common/View/VirtualizedView';
+import LocationWeatherList from '../../../modules/LocationWeatherList';
 
 const Home = () => {
   const [geolocation, setGeoLocation] = useState<Record<string, number>>({});
@@ -56,7 +54,6 @@ const Home = () => {
     let granted = await requestLocationPermission();
     if (PermissionsAndroid.RESULTS.GRANTED === granted) {
       getGeoLocation(loc => storeUserLocation(loc));
-      await storeItem(KEY_LOCATIONS_PERMISSION_ASK, 'true');
     }
   };
 
