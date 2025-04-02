@@ -26,4 +26,4 @@ export const KEYBOARD: Record<string, any> = {
 export const DEGREE_SIGN = '\u00B0';
 export const COMMON_ERROR_MESSAGE = 'Something went wrong';
 export const KEY_LOCATIONS = 'locations';
-export const KEY_LOCATIONS_PERMISSION_ASK = 'locationPermissionAsked';
+export const KEY_GEO_LOCATION = 'geoLocation';

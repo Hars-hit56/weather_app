@@ -19,7 +19,7 @@ import {
 import {
   COMMON_ERROR_MESSAGE,
   KEY_LOCATIONS,
-  KEY_LOCATIONS_PERMISSION_ASK,
+  KEY_GEO_LOCATION,
   SCREEN_ADD_LOCATION,
   SCREEN_LOCATION_WEATHER_DETAIL,
 } from '../../../../utility/constants';
@@ -52,8 +52,18 @@ const Home = () => {
   // Geo Location Permission
   const reqLocationPermission = async () => {
     let granted = await requestLocationPermission();
-    if (PermissionsAndroid.RESULTS.GRANTED === granted) {
-      getGeoLocation(loc => storeUserLocation(loc));
+
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      getGeoLocation(async loc => {
+        storeUserLocation(loc);
+        await storeItem(KEY_GEO_LOCATION, loc);
+      });
+    } else if (
+      granted === PermissionsAndroid.RESULTS.DENIED ||
+      granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
+    ) {
+      const geoLoc = await retrieveItem(KEY_GEO_LOCATION);
+      if (geoLoc) setGeoLocation(geoLoc);
     }
   };
 
